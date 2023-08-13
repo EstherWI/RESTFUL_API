@@ -6,7 +6,7 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import sqlite3 from 'sqlite3';
 
-const app = express();
+export const app = express();
 const port = 3000;
 const route = Router()
 
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-const db = new sqlite3.Database(':memory:'); 
+export const db = new sqlite3.Database(':memory:'); 
 
 db.serialize(() => {
     db.run('CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,  city TEXT, country TEXT, favorite_sport TEXT)');
