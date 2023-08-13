@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { populateDatabase } from '../src/populate';
 
 before(async () => {
-    await populateDatabase(); 
+    await populateDatabase();
 });
 
 describe('User Search Test', () => {

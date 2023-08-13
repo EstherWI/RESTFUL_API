@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-export const db = new sqlite3.Database(':memory:'); 
+export const db = new sqlite3.Database(':memory:');
 
 db.serialize(() => {
     db.run('CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,  city TEXT, country TEXT, favorite_sport TEXT)');
@@ -71,7 +71,7 @@ route.get('/api/users', (req: Request, res: Response) => {
             console.error('SQLite Error:', err.message);
             return res.status(500).json({ error: 'An error occurred while querying the database.' });
         }
-        if(users.length == 0){
+        if (users.length == 0) {
             return res.status(404).json({ error: 'User not found' });
         }
         return res.status(200).json(users);
