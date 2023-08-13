@@ -25,7 +25,7 @@ const upload = multer({ storage });
 const db = new sqlite3.Database(':memory:'); 
 
 db.serialize(() => {
-    db.run('CREATE TABLE users (name TEXT,  city TEXT, country TEXT, favorite_sport TEXT)');
+    db.run('CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,  city TEXT, country TEXT, favorite_sport TEXT)');
 });
 
 route.post('/api/files', upload.single('file'), (req: Request, res: Response) => {
@@ -43,9 +43,8 @@ route.post('/api/files', upload.single('file'), (req: Request, res: Response) =>
             .on('end', () => {
                 fs.unlinkSync(file.path);
                 db.serialize(() => {
-                    const stmt = db.prepare('INSERT INTO users VALUES (?, ?, ?, ?)');
+                    const stmt = db.prepare('INSERT INTO users (name, city, country, favorite_sport) VALUES (?, ?, ?, ?)');
                     users.forEach(user => stmt.run(user.name, user.city, user.country, user.favorite_sport));
-
                     stmt.finalize();
                 });
                 return res.status(200).json({ message: 'File uploaded successfully.' });
@@ -67,12 +66,15 @@ route.get('/api/users', (req: Request, res: Response) => {
         queryParams.push(`%${searchTerm.toLowerCase()}%`);
     }
 
-    db.all(query, queryParams, (err, rows) => {
+    db.all(query, queryParams, (err, users) => {
         if (err) {
             console.error('SQLite Error:', err.message);
             return res.status(500).json({ error: 'An error occurred while querying the database.' });
         }
-        return res.status(200).json(rows);
+        if(users.length == 0){
+            return res.status(404).json({ error: 'User not found' });
+        }
+        return res.status(200).json(users);
     });
 
 })
