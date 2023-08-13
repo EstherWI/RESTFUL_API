@@ -10,6 +10,10 @@ export const app = express();
 const port = 3000;
 const route = Router()
 
+if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+} 
+
 app.use(express.json())
 
 const storage = multer.diskStorage({
